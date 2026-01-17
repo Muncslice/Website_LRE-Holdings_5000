@@ -1,0 +1,76 @@
+{
+    "title": "inventory",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "description": "Primary key, auto-increment"
+        },
+        "sku": {
+            "type": "string",
+            "description": "Stock keeping unit, unique"
+        },
+        "product_name": {
+            "type": "string",
+            "description": "Product name"
+        },
+        "description": {
+            "type": "string",
+            "description": "Product description"
+        },
+        "category": {
+            "type": "string",
+            "description": "Product category"
+        },
+        "unit_cost": {
+            "type": "number",
+            "description": "Unit cost in dollars"
+        },
+        "retail_price": {
+            "type": "number",
+            "description": "Retail price in dollars"
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "WAREHOUSE",
+                "TRANSIT",
+                "CONSIGNED",
+                "SOLD",
+                "RETURNED"
+            ],
+            "description": "Inventory status"
+        },
+        "location": {
+            "type": "string",
+            "description": "Warehouse location or affiliate ID"
+        },
+        "barcode": {
+            "type": "string",
+            "description": "Barcode for scanning"
+        },
+        "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+        },
+        "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+        },
+        "deleted_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Soft delete timestamp"
+        }
+    },
+    "required": [
+        "id",
+        "sku",
+        "product_name",
+        "unit_cost",
+        "retail_price",
+        "status"
+    ]
+}

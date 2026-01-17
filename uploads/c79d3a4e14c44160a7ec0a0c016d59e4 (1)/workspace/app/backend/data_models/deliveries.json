@@ -1,0 +1,86 @@
+{
+    "title": "deliveries",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "description": "Primary key, auto-increment"
+        },
+        "user_id": {
+            "type": "string",
+            "description": "Driver user ID"
+        },
+        "driver_id": {
+            "type": "string",
+            "description": "Driver user ID (for RLS)"
+        },
+        "consignment_id": {
+            "type": "integer",
+            "description": "Reference to consignment"
+        },
+        "delivery_address": {
+            "type": "string",
+            "description": "Delivery address"
+        },
+        "scheduled_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Scheduled delivery date"
+        },
+        "completed_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Actual completion date"
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "PENDING",
+                "IN_PROGRESS",
+                "COMPLETED",
+                "FAILED"
+            ],
+            "description": "Delivery status"
+        },
+        "route_priority": {
+            "type": "integer",
+            "description": "Route priority for sorting"
+        },
+        "signature_url": {
+            "type": "string",
+            "description": "URL to signature image"
+        },
+        "photo_url": {
+            "type": "string",
+            "description": "URL to proof of delivery photo"
+        },
+        "notes": {
+            "type": "string",
+            "description": "Delivery notes"
+        },
+        "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+        },
+        "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+        },
+        "deleted_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Soft delete timestamp"
+        }
+    },
+    "required": [
+        "id",
+        "user_id",
+        "driver_id",
+        "consignment_id",
+        "delivery_address",
+        "status",
+        "route_priority"
+    ]
+}

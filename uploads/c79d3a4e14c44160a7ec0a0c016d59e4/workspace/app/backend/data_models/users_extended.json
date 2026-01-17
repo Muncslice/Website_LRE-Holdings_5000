@@ -1,0 +1,51 @@
+{
+    "title": "users_extended",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "string",
+            "description": "User ID from auth.users"
+        },
+        "role": {
+            "type": "string",
+            "enum": [
+                "admin",
+                "affiliate",
+                "driver"
+            ],
+            "description": "User role"
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "active",
+                "suspended"
+            ],
+            "description": "User status"
+        },
+        "full_name": {
+            "type": "string",
+            "description": "Full name"
+        },
+        "phone": {
+            "type": "string",
+            "description": "Phone number"
+        },
+        "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+        },
+        "deleted_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Soft delete timestamp"
+        }
+    },
+    "required": [
+        "id",
+        "role",
+        "status",
+        "full_name"
+    ]
+}

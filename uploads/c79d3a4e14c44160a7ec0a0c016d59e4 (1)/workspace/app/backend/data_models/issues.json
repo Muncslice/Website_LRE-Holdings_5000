@@ -1,0 +1,74 @@
+{
+    "title": "issues",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "description": "Primary key, auto-increment"
+        },
+        "user_id": {
+            "type": "string",
+            "description": "Affiliate user ID"
+        },
+        "affiliate_id": {
+            "type": "string",
+            "description": "Affiliate user ID (for RLS)"
+        },
+        "inventory_id": {
+            "type": "integer",
+            "description": "Reference to inventory"
+        },
+        "issue_type": {
+            "type": "string",
+            "enum": [
+                "DAMAGE",
+                "MISSING",
+                "MISMATCH",
+                "OTHER"
+            ],
+            "description": "Type of issue"
+        },
+        "description": {
+            "type": "string",
+            "description": "Issue description"
+        },
+        "photo_url": {
+            "type": "string",
+            "description": "URL to photo of issue"
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "OPEN",
+                "IN_PROGRESS",
+                "RESOLVED",
+                "CLOSED"
+            ],
+            "description": "Issue status"
+        },
+        "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+        },
+        "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+        },
+        "deleted_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Soft delete timestamp"
+        }
+    },
+    "required": [
+        "id",
+        "user_id",
+        "affiliate_id",
+        "inventory_id",
+        "issue_type",
+        "description",
+        "status"
+    ]
+}

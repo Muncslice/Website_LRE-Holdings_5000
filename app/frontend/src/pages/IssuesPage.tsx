@@ -1,0 +1,103 @@
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import StatusBadge from '@/components/StatusBadge';
+import { Search } from 'lucide-react';
+
+export default function IssuesPage() {
+  const [issues, setIssues] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  console.log('⚠️ ISSUES: Component mounted');
+
+  useEffect(() => {
+    loadIssues();
+  }, []);
+
+  const loadIssues = async () => {
+    try {
+      console.log('⚠️ ISSUES: Loading data...');
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('issues')
+        .select('*, users_extended(full_name), inventory(product_name)')
+        .is('deleted_at', null)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      console.log('✅ ISSUES: Loaded', data?.length, 'issues');
+      setIssues(data || []);
+    } catch (error: any) {
+      console.error('❌ ISSUES: Load failed:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredIssues = issues.filter(
+    (i) =>
+      i.id?.toString().includes(searchTerm) ||
+      i.issue_type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      i.users_extended?.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <h1 className="text-3xl font-bold text-white">Issues</h1>
+
+      <Card className="bg-slate-800 border-slate-700">
+        <CardHeader>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
+            <Input
+              placeholder="Search by ID, type, or affiliate..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 bg-slate-700 border-slate-600"
+            />
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-slate-700 text-slate-300 text-xs uppercase">
+                <tr>
+                  <th className="px-4 py-3 text-left">ID</th>
+                  <th className="px-4 py-3 text-left">Affiliate</th>
+                  <th className="px-4 py-3 text-left">Product</th>
+                  <th className="px-4 py-3 text-left">Type</th>
+                  <th className="px-4 py-3 text-left">Description</th>
+                  <th className="px-4 py-3 text-left">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-700">
+                {filteredIssues.map((i) => (
+                  <tr key={i.id} className="hover:bg-slate-700 text-white">
+                    <td className="px-4 py-3 text-sm">{i.id}</td>
+                    <td className="px-4 py-3 text-sm">{i.users_extended?.full_name || 'N/A'}</td>
+                    <td className="px-4 py-3 text-sm">{i.inventory?.product_name || 'N/A'}</td>
+                    <td className="px-4 py-3 text-sm">{i.issue_type}</td>
+                    <td className="px-4 py-3 text-sm max-w-xs truncate">{i.description}</td>
+                    <td className="px-4 py-3">
+                      <StatusBadge status={i.status} type="issue" />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

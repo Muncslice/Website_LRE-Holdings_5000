@@ -1,0 +1,76 @@
+{
+    "title": "payments",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "description": "Primary key, auto-increment"
+        },
+        "user_id": {
+            "type": "string",
+            "description": "Affiliate user ID"
+        },
+        "affiliate_id": {
+            "type": "string",
+            "description": "Affiliate user ID (for RLS)"
+        },
+        "consignment_id": {
+            "type": "integer",
+            "description": "Reference to consignment"
+        },
+        "amount": {
+            "type": "number",
+            "description": "Payment amount in dollars"
+        },
+        "payment_type": {
+            "type": "string",
+            "enum": [
+                "SALE",
+                "RETURN",
+                "ADJUSTMENT"
+            ],
+            "description": "Type of payment"
+        },
+        "payment_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Payment date"
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "PENDING",
+                "COMPLETED",
+                "CANCELLED"
+            ],
+            "description": "Payment status"
+        },
+        "notes": {
+            "type": "string",
+            "description": "Payment notes"
+        },
+        "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+        },
+        "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+        },
+        "deleted_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Soft delete timestamp"
+        }
+    },
+    "required": [
+        "id",
+        "user_id",
+        "affiliate_id",
+        "amount",
+        "payment_type",
+        "status"
+    ]
+}

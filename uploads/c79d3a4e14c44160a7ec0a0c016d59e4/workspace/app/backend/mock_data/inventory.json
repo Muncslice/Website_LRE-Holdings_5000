@@ -1,0 +1,67 @@
+[
+    {
+        "sku": "WH-001",
+        "product_name": "Industrial Safety Helmet",
+        "description": "High-impact resistant safety helmet with adjustable straps",
+        "category": "Safety Equipment",
+        "unit_cost": 25.0,
+        "retail_price": 49.99,
+        "status": "WAREHOUSE",
+        "location": "A-12-3",
+        "barcode": "7891234567890",
+        "created_at": "2026-01-10 10:00:00",
+        "updated_at": "2026-01-10 10:00:00"
+    },
+    {
+        "sku": "WH-002",
+        "product_name": "Heavy Duty Work Gloves",
+        "description": "Cut-resistant work gloves, size L",
+        "category": "Safety Equipment",
+        "unit_cost": 12.0,
+        "retail_price": 24.99,
+        "status": "WAREHOUSE",
+        "location": "A-12-4",
+        "barcode": "7891234567891",
+        "created_at": "2026-01-10 10:00:00",
+        "updated_at": "2026-01-10 10:00:00"
+    },
+    {
+        "sku": "WH-003",
+        "product_name": "Safety Vest - Orange",
+        "description": "High-visibility safety vest with reflective strips",
+        "category": "Safety Equipment",
+        "unit_cost": 8.0,
+        "retail_price": 16.99,
+        "status": "CONSIGNED",
+        "location": "affiliate-001",
+        "barcode": "7891234567892",
+        "created_at": "2026-01-10 10:00:00",
+        "updated_at": "2026-01-10 10:00:00"
+    },
+    {
+        "sku": "WH-004",
+        "product_name": "Steel Toe Boots",
+        "description": "OSHA-compliant steel toe work boots, size 10",
+        "category": "Footwear",
+        "unit_cost": 45.0,
+        "retail_price": 89.99,
+        "status": "WAREHOUSE",
+        "location": "B-05-2",
+        "barcode": "7891234567893",
+        "created_at": "2026-01-10 10:00:00",
+        "updated_at": "2026-01-10 10:00:00"
+    },
+    {
+        "sku": "WH-005",
+        "product_name": "Tool Belt",
+        "description": "Heavy-duty leather tool belt with multiple pockets",
+        "category": "Tools",
+        "unit_cost": 30.0,
+        "retail_price": 59.99,
+        "status": "CONSIGNED",
+        "location": "affiliate-002",
+        "barcode": "7891234567894",
+        "created_at": "2026-01-10 10:00:00",
+        "updated_at": "2026-01-10 10:00:00"
+    }
+]

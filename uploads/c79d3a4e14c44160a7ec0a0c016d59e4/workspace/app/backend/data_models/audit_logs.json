@@ -1,0 +1,51 @@
+{
+    "title": "audit_logs",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "description": "Primary key, auto-increment"
+        },
+        "table_name": {
+            "type": "string",
+            "description": "Name of the table that was modified"
+        },
+        "record_id": {
+            "type": "string",
+            "description": "ID of the record that was modified"
+        },
+        "action": {
+            "type": "string",
+            "enum": [
+                "INSERT",
+                "UPDATE",
+                "DELETE"
+            ],
+            "description": "Type of action performed"
+        },
+        "old_data": {
+            "type": "string",
+            "description": "JSON string of old data"
+        },
+        "new_data": {
+            "type": "string",
+            "description": "JSON string of new data"
+        },
+        "user_id": {
+            "type": "string",
+            "description": "User who performed the action"
+        },
+        "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp of the action"
+        }
+    },
+    "required": [
+        "id",
+        "table_name",
+        "record_id",
+        "action",
+        "new_data"
+    ]
+}
