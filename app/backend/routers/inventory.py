@@ -254,22 +254,19 @@ async def update_inventorys_batch(
 ):
     """Update multiple inventorys in a single request"""
     logger.debug(f"Batch updating {len(request.items)} inventorys")
-    
+
     service = InventoryService(db)
-    results = []
-    
+
     try:
-        for item in request.items:
-            # Only include non-None values for partial updates
-            update_dict = {k: v for k, v in item.updates.model_dump().items() if v is not None}
-            result = await service.update(item.id, update_dict)
-            if result:
-                results.append(result)
-        
+        # Prepare data for the service layer
+        items_to_update = [item.model_dump() for item in request.items]
+
+        results = await service.batch_update(items_to_update)
+
         logger.info(f"Batch updated {len(results)} inventorys successfully")
         return results
     except Exception as e:
-        await db.rollback()
+        # The service layer now handles the rollback
         logger.error(f"Error in batch update: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Batch update failed: {str(e)}")
 
