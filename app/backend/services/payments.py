@@ -32,6 +32,30 @@ class PaymentsService:
             logger.error(f"Error creating payments: {str(e)}")
             raise
 
+    async def batch_create(self, items_data: List[Dict[str, Any]], user_id: Optional[str] = None) -> List[Payments]:
+        """Create multiple payments in a single transaction"""
+        try:
+            objs = []
+            for data in items_data:
+                if user_id:
+                    data['user_id'] = user_id
+                obj = Payments(**data)
+                objs.append(obj)
+
+            self.db.add_all(objs)
+            await self.db.commit()
+
+            # Refresh to populate IDs and other server-side defaults
+            for obj in objs:
+                await self.db.refresh(obj)
+
+            logger.info(f"Batch created {len(objs)} payments")
+            return objs
+        except Exception as e:
+            await self.db.rollback()
+            logger.error(f"Error creating payments batch: {str(e)}")
+            raise
+
     async def check_ownership(self, obj_id: int, user_id: str) -> bool:
         """Check if user owns this record"""
         try:
