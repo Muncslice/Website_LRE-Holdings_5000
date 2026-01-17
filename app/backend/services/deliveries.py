@@ -1,7 +1,7 @@
 import logging
 from typing import Optional, Dict, Any, List
 
-from sqlalchemy import select, func
+from sqlalchemy import select, func, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models.deliveries import Deliveries
@@ -137,6 +137,24 @@ class DeliveriesService:
         except Exception as e:
             await self.db.rollback()
             logger.error(f"Error deleting deliveries {obj_id}: {str(e)}")
+            raise
+
+    async def delete_batch(self, obj_ids: List[int], user_id: Optional[str] = None) -> int:
+        """Delete multiple deliveriess (requires ownership)"""
+        try:
+            stmt = delete(Deliveries).where(Deliveries.id.in_(obj_ids))
+            if user_id:
+                stmt = stmt.where(Deliveries.user_id == user_id)
+
+            result = await self.db.execute(stmt)
+            await self.db.commit()
+
+            deleted_count = result.rowcount
+            logger.info(f"Batch deleted {deleted_count} deliveriess")
+            return deleted_count
+        except Exception as e:
+            await self.db.rollback()
+            logger.error(f"Error in batch delete: {str(e)}")
             raise
 
     async def get_by_field(self, field_name: str, field_value: Any) -> Optional[Deliveries]:
