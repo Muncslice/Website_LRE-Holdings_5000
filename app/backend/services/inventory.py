@@ -105,6 +105,45 @@ class InventoryService:
             logger.error(f"Error updating inventory {obj_id}: {str(e)}")
             raise
 
+    async def batch_update(self, items: List[Dict[str, Any]]) -> List[Inventory]:
+        """Batch update inventory items"""
+        updated_objects = []
+        try:
+            item_ids = [item['id'] for item in items]
+
+            # Fetch all objects to be updated in a single query
+            query = select(Inventory).where(Inventory.id.in_(item_ids))
+            result = await self.db.execute(query)
+            objects_to_update = {obj.id: obj for obj in result.scalars().all()}
+
+            if not objects_to_update:
+                logger.warning("No inventory items found for batch update")
+                return []
+
+            for item in items:
+                obj_id = item['id']
+                update_data = item['updates']
+
+                if obj_id in objects_to_update:
+                    obj = objects_to_update[obj_id]
+                    for key, value in update_data.items():
+                        if hasattr(obj, key) and value is not None:
+                            setattr(obj, key, value)
+                    updated_objects.append(obj)
+
+            await self.db.commit()
+
+            # Refresh each object to get the updated state from the DB
+            for obj in updated_objects:
+                await self.db.refresh(obj)
+
+            logger.info(f"Batch updated {len(updated_objects)} inventory items")
+            return updated_objects
+        except Exception as e:
+            await self.db.rollback()
+            logger.error(f"Error in batch update: {str(e)}")
+            raise
+
     async def delete(self, obj_id: int) -> bool:
         """Delete inventory"""
         try:
