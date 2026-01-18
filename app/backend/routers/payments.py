@@ -233,13 +233,10 @@ async def create_paymentss_batch(
     logger.debug(f"Batch creating {len(request.items)} paymentss")
     
     service = PaymentsService(db)
-    results = []
     
     try:
-        for item_data in request.items:
-            result = await service.create(item_data.model_dump(), user_id=str(current_user.id))
-            if result:
-                results.append(result)
+        items_data = [item.model_dump() for item in request.items]
+        results = await service.batch_create(items_data, user_id=str(current_user.id))
         
         logger.info(f"Batch created {len(results)} paymentss successfully")
         return results
