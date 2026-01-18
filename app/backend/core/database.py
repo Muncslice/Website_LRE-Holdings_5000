@@ -84,15 +84,8 @@ class DatabaseManager:
             logger.error(f"Database not found:{filename}")
         return found
 
-    async def init_db(self):
-        """Initialize database connection with thread safety"""
-        logger.info("Starting database initialization...")
-
-        async with self._init_lock:
-            if self.engine is not None:
-                logger.info("Database already initialized")
-                return
-
+    async def _init_db_internal(self):
+        """Internal initialization logic assuming lock is held"""
         if not settings.database_url:
             logger.error("No database URL provided. DATABASE_URL environment variable must be set.")
             raise ValueError("DATABASE_URL environment variable is required")
@@ -140,6 +133,16 @@ class DatabaseManager:
         except Exception as e:
             logger.error(f"Failed to initialize database: {e}", exc_info=True)
             raise
+
+    async def init_db(self):
+        """Initialize database connection with thread safety"""
+        logger.info("Starting database initialization...")
+
+        async with self._init_lock:
+            if self.engine is not None:
+                logger.info("Database already initialized")
+                return
+            await self._init_db_internal()
 
     async def close_db(self):
         """Close database connection and dispose engine
@@ -483,22 +486,17 @@ class DatabaseManager:
         if self.async_session_maker is not None:
             return
 
-        # Use lock to prevent concurrent initialization attempts in the same Lambda execution environment
-        async with self._init_lock:
-            # Double-check after acquiring lock (another request might have initialized it while we waited)
-            if self.async_session_maker is not None:
-                return
-
-            logger.warning("Database not initialized, attempting lazy initialization...")
-
-        # Release lock before calling init_db() because:
-        # 1. init_db() will try to acquire the same _init_lock internally (line 93), which would cause deadlock
-        # 2. Note: init_db() has a bug - its lock is released after the check (line 96),
-        #    so the actual initialization code (lines 98-146) is not protected by lock.
-        #    This is a pre-existing issue, not introduced by this change.
-        # 3. The double-checked locking pattern above ensures only one request proceeds to initialization
         try:
-            await self.init_db()
+            # Use lock to prevent concurrent initialization attempts in the same Lambda execution environment
+            async with self._init_lock:
+                # Double-check after acquiring lock (another request might have initialized it while we waited)
+                if self.async_session_maker is not None:
+                    return
+
+                logger.warning("Database not initialized, attempting lazy initialization...")
+                await self._init_db_internal()
+
+            # Create tables after initializing the database (create_tables has its own lock)
             await self.create_tables()
             logger.info("Lazy database initialization completed successfully")
         except Exception as e:
