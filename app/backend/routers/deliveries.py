@@ -327,13 +327,9 @@ async def delete_deliveriess_batch(
     logger.debug(f"Batch deleting {len(request.ids)} deliveriess")
     
     service = DeliveriesService(db)
-    deleted_count = 0
     
     try:
-        for item_id in request.ids:
-            success = await service.delete(item_id, user_id=str(current_user.id))
-            if success:
-                deleted_count += 1
+        deleted_count = await service.delete_batch(request.ids, user_id=str(current_user.id))
         
         logger.info(f"Batch deleted {deleted_count} deliveriess successfully")
         return {"message": f"Successfully deleted {deleted_count} deliveriess", "deleted_count": deleted_count}
