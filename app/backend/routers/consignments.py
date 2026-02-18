@@ -233,17 +233,16 @@ async def create_consignmentss_batch(
     logger.debug(f"Batch creating {len(request.items)} consignmentss")
     
     service = ConsignmentsService(db)
-    results = []
     
     try:
-        for item_data in request.items:
-            result = await service.create(item_data.model_dump(), user_id=str(current_user.id))
-            if result:
-                results.append(result)
+        items_data = [item.model_dump() for item in request.items]
+        results = await service.create_batch(items_data, user_id=str(current_user.id))
         
         logger.info(f"Batch created {len(results)} consignmentss successfully")
         return results
     except Exception as e:
+        # Note: rollback is handled within service.create_batch,
+        # but we keep it here for extra safety if create_batch fails before its own try/except
         await db.rollback()
         logger.error(f"Error in batch create: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Batch create failed: {str(e)}")
