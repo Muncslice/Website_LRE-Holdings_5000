@@ -32,6 +32,31 @@ class ConsignmentsService:
             logger.error(f"Error creating consignments: {str(e)}")
             raise
 
+    async def create_batch(self, items_data: List[Dict[str, Any]], user_id: Optional[str] = None) -> List[Consignments]:
+        """Create multiple consignments in a single batch"""
+        if not items_data:
+            return []
+        try:
+            objs = []
+            for data in items_data:
+                if user_id:
+                    data['user_id'] = user_id
+                objs.append(Consignments(**data))
+
+            self.db.add_all(objs)
+            await self.db.commit()
+
+            # Refresh each object to ensure all database-generated fields are populated
+            for obj in objs:
+                await self.db.refresh(obj)
+
+            logger.info(f"Batch created {len(objs)} consignments")
+            return objs
+        except Exception as e:
+            await self.db.rollback()
+            logger.error(f"Error in batch create: {str(e)}")
+            raise
+
     async def check_ownership(self, obj_id: int, user_id: str) -> bool:
         """Check if user owns this record"""
         try:
